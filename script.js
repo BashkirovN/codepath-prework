@@ -1,20 +1,29 @@
 // global constants
-const clueHoldTime = 1000; //how long to hold each clue's light/sound
-const cluePauseTime = 333; //how long to pause in between clues
+var clueHoldTime = 1000; //how long to hold each clue's light/sound
+var cluePauseTime = 333; //how long to pause in between clues
 const nextClueWaitTime = 1000; //how long to wait before starting playback of the clue sequence
 
 //Global Variables
 var tonePlaying = false;
 var volume = 0.5;  //must be between 0.0 and 1.0
-var pattern = [2, 2, 4, 3, 2, 1, 2, 4];
+var pattern = [];
 var progress = 0; 
 var gamePlaying = false;
 var guessCounter = 0;
+var maxLength = 8;
+
+function generateSequence(){
+  pattern = []
+  for(let i=0; i<maxLength; i++)  {
+    pattern[i] = (Math.floor(Math.random() * 4)+1);
+  }
+}
 
 function startGame(){
   //initialize game variables
   progress = 0;
   gamePlaying = true;
+  generateSequence();
 
   // swap the Start and Stop buttons
   document.getElementById("startBtn").classList.add("hidden");
@@ -123,6 +132,8 @@ function guess(btn){
         winGame()
       }  else  {
         progress++;
+        clueHoldTime = clueHoldTime - (clueHoldTime/maxLength);
+        cluePauseTime = cluePauseTime - (cluePauseTime/maxLength);
         playClueSequence();
       }
     }  else  {
